@@ -1,34 +1,44 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { EnrollementService } from './enrollement.service';
-import { CreateEnrollementDto } from './dto/create-enrollement.dto';
-import { UpdateEnrollementDto } from './dto/update-enrollement.dto';
+import { EnrollmentService } from './enrollement.service';
+import { CreateEnrollmentDto } from './dto/create-enrollement.dto';
+import { UpdateEnrollmentDto } from './dto/update-enrollement.dto';
 
-@Controller('enrollement')
-export class EnrollementController {
-  constructor(private readonly enrollementService: EnrollementService) {}
+@Controller('enrollment')
+export class EnrollmentController {
+  constructor(private readonly enrollmentService: EnrollmentService) {}
 
   @Post()
-  create(@Body() createEnrollementDto: CreateEnrollementDto) {
-    return this.enrollementService.create(createEnrollementDto);
+  create(@Body() createEnrollmentDto: CreateEnrollmentDto) {
+    return this.enrollmentService.create(createEnrollmentDto);
   }
 
   @Get()
   findAll() {
-    return this.enrollementService.findAll();
+    return this.enrollmentService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.enrollementService.findOne(+id);
+    return this.enrollmentService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEnrollementDto: UpdateEnrollementDto) {
-    return this.enrollementService.update(+id, updateEnrollementDto);
+  update(@Param('id') id: string, @Body() updateEnrollmentDto: UpdateEnrollmentDto) {
+    return this.enrollmentService.update(+id, updateEnrollmentDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.enrollementService.remove(+id);
+    return this.enrollmentService.remove(+id);
+  }
+
+  @Post(':studentId/enroll/:courseId')
+  enrollStudent(@Param('studentId') studentId: number, @Param('courseId') courseId: number) {
+    return this.enrollmentService.enrollStudent(courseId, studentId);
+  }
+
+  @Post(':studentId/unenroll/:courseId')
+  unenrollStudent(@Param('studentId') studentId: number, @Param('courseId') courseId: number) {
+    return this.enrollmentService.unenrollStudent(courseId, studentId);
   }
 }

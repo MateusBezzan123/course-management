@@ -5,6 +5,7 @@ import { Student } from './entities/student.entity';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { Course } from '../course/entities/course.entity';
+import { Enrollment } from '../enrollement/entities/enrollement.entity';
 
 @Injectable()
 export class StudentService {
@@ -14,6 +15,9 @@ export class StudentService {
 
     @InjectRepository(Course)
     private courseRepository: Repository<Course>,
+
+    @InjectRepository(Enrollment)
+    private enrollmentRepository: Repository<Enrollment>,
   ) {}
 
   findAll(): Promise<Student[]> {
@@ -30,10 +34,7 @@ export class StudentService {
     return this.studentRepository.save(student);
   }
 
-  async update(
-    id: number,
-    updateStudentDto: UpdateStudentDto,
-  ): Promise<Student> {
+  async update(id: number, updateStudentDto: UpdateStudentDto): Promise<Student> {
     await this.studentRepository.update(id, updateStudentDto);
     return this.studentRepository.findOneBy({ id });
   }
@@ -54,32 +55,24 @@ export class StudentService {
     }
 
     const enrollmentNumber = `ENROLL-${courseId}-${studentId}-${Date.now()}`;
-    student.enrollmentNumbers[courseId] = enrollmentNumber;
 
-    if (!student.courses) {
-      student.courses = [];
-    }
-    student.courses.push(course);
+    const enrollment = new Enrollment();
+    enrollment.course = course;
+    enrollment.student = student;
+    enrollment.enrollmentNumber = enrollmentNumber;
 
-    await this.studentRepository.save(student);
+    await this.enrollmentRepository.save(enrollment);
   }
 
   async unenrollStudent(courseId: number, studentId: number): Promise<void> {
-    const student = await this.studentRepository.findOneBy({ id: studentId });
-    if (!student) {
-      throw new Error('Student not found');
+    const enrollment = await this.enrollmentRepository.findOne({
+      where: { course: { id: courseId }, student: { id: studentId } },
+    });
+
+    if (!enrollment) {
+      throw new Error('Enrollment not found');
     }
 
-    if (student.enrollmentNumbers && student.enrollmentNumbers[courseId]) {
-      delete student.enrollmentNumbers[courseId];
-    }
-
-    if (student.courses) {
-      student.courses = student.courses.filter(course => course.id !== courseId);
-    } else {
-      student.courses = [];
-    }
-
-    await this.studentRepository.save(student);
+    await this.enrollmentRepository.remove(enrollment);
   }
 }

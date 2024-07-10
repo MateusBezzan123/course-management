@@ -3,6 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -16,12 +17,18 @@ export class Course {
   @Column()
   description: string;
 
-  @Column({ default: false })
+  @Column()
   price: number;
+
+  @Column({ type: 'datetime', nullable: true })
+  expirationDate?: Date;
 
   @Column({ default: false })
   isExpired: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

@@ -10,7 +10,7 @@ Entre suas tarefas estão:
 2. Adicionar a possibilidade de expirar um curso, podendo estar expirado ou não;
 3. Gerar um número de matrícula para os alunos cada vez que forem cadastrados;
 4. Adicionar a possibilidade de cadastrar e descadastrar alunos à cursos;
-5. Migrar a geração de de número de matrícula do aluno para cada um de seus cursos.
+5. Migrar a geração de número de matrícula do aluno para cada um de seus cursos.
 
 Perguntas:
 

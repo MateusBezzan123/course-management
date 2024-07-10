@@ -1,27 +1,26 @@
 import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    CreateDateColumn,
-  } from 'typeorm';
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  Column,
+  JoinColumn,
+} from 'typeorm';
+import { Course } from '../../course/entities/course.entity';
+import { Student } from '../../student/entities/student.entity';
 
-  @Entity()
-export class Enrollement {
-    @PrimaryGeneratedColumn()
-    id: number;
-  
-    @Column()
-    title: string;
-  
-    @Column()
-    description: string;
-  
-    @Column({ default: false })
-    price: number;
-  
-    @Column({ default: false })
-    isExpired: boolean;
-  
-    @CreateDateColumn()
-    createdAt: Date;
+@Entity()
+export class Enrollment {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToOne(() => Course, { eager: true })
+  @JoinColumn()
+  course: Course;
+
+  @ManyToOne(() => Student, { eager: true })
+  @JoinColumn()
+  student: Student;
+
+  @Column()
+  enrollmentNumber: string;
 }
